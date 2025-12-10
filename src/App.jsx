@@ -30,7 +30,7 @@ function App() {
     // Создаем распределение: выбираем 3 случайных карты и назначаем им цвета
     const distribution = Array(5).fill(null)
     for (let i = 0; i < 3; i++) {
-      distribution[indices[i]] = colors[i]
+      distribution[indices[i]] = colors[i] 
     }
     
     return distribution
