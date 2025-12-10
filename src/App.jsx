@@ -315,7 +315,7 @@ function App() {
                 }}
               >
                 <div className="card-wrapper">
-                  <img src="/card1.png" alt={`Card ${index + 1}`} />
+                  <img src={`${import.meta.env.BASE_URL}card1.png`} alt={`Card ${index + 1}`} />
                 </div>
               </div>
             )})}
