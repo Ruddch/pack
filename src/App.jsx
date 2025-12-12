@@ -176,10 +176,12 @@ function App() {
       if (progress < 1) {
         animationRafIdRef.current = requestAnimationFrame(animate)
       } else {
+        setPackOpened(true)
         // Анимация завершена
         setProgress({ x: targetProgress })
         setDistance(targetDistance)
-        setPackOpened(true)
+        
+        console.log(progress, distance)
         animationStartTimeRef.current = null
         animationRafIdRef.current = null
       }
@@ -225,6 +227,7 @@ function App() {
         setMousePos({ x: relativeX, y: relativeY })
         setProgress({x: newProgressX})
         setDistance(newDistance)
+        console.log(newProgressX, newDistance)
       }
     })
   }, [isDragging, getParallaxElement, getEventCoordinates])
@@ -301,21 +304,6 @@ function App() {
     >
       
       <div className="wrapper">
-      <div className={`glow-effect ${packOpened ? 'pack-opened' : ''}`}>
-        <div style={dragginStarted ? {} : {opacity: 1}} className="glow-center">
-          <div className="center-particle center-particle-1"></div>
-          <div className="center-particle center-particle-2"></div>
-          <div className="center-particle center-particle-3"></div>
-          <div className="center-particle center-particle-4"></div>
-          <div className="center-particle center-particle-5"></div>
-          <div className="center-particle center-particle-6"></div>
-          <div className="center-particle center-particle-7"></div>
-          <div className="center-particle center-particle-8"></div>
-        </div>
-        <div style={{opacity: glowRaysOpacity}} className="glow-rays"></div> 
-        <div  className={`glow-particles ${packOpened ? 'pack-opened' : ''}`}></div>
-        <div  className={`glow-rings ${packOpened ? 'pack-opened' : ''}`}></div>
-      </div>
         <div className={`cards-container ${packOpened ? 'pack-opened' : ''}`}>
             {[...Array(5)].map((_, index) => {
               const translateXValues = [-280, -165, -50, 65, 180]
@@ -344,56 +332,75 @@ function App() {
                 </div>
               </div>
             )})}
+        </div>
+        <div className={`animation-container ${distance >= 460 && !isDragging ? 'pack-opened' : ''}`}>
+          <div className={`glow-effect ${distance >= 460 ? 'pack-opened' : ''}`}>
+            <div style={dragginStarted ? {} : {opacity: 1}} className="glow-center">
+              <div className="center-particle center-particle-1"></div>
+              <div className="center-particle center-particle-2"></div>
+              <div className="center-particle center-particle-3"></div>
+              <div className="center-particle center-particle-4"></div>
+              <div className="center-particle center-particle-5"></div>
+              <div className="center-particle center-particle-6"></div>
+              <div className="center-particle center-particle-7"></div>
+              <div className="center-particle center-particle-8"></div>
+            </div>
+            <div style={{opacity: glowRaysOpacity}} className="glow-rays"></div> 
+            <div  className={`glow-particles ${packOpened ? 'pack-opened' : ''}`}></div>
+            <div  className={`glow-rings ${packOpened ? 'pack-opened' : ''}`}></div>
           </div>
-      <Tilt
-        ref={(node) => {
-          containerRef.current = node
-          // Tilt может передавать не DOM элемент напрямую, поэтому сохраняем как есть
-          // и используем getParallaxElement() для безопасного получения DOM элемента
-          parallaxElementRef.current = node
-        }}
-        className={`tilt-wrapper parallax-effect glare-scale ${packOpened ? 'pack-opened' : ''}`}
-        tiltEnable={!packOpened}
-        tiltMaxAngleX={dragginStarted ? 0 : 10}
-        tiltMaxAngleY={dragginStarted ? 0 : 10}
-        perspective={1000}
-        glareEnable={!dragginStarted}
-        glareColor={dragginStarted ? 'transparent' : 'white'}
-        scale={dragginStarted ? 1 : 1.02}
-        transitionSpeed={1000}
-      >
+          <Tilt
+            ref={(node) => {
+              containerRef.current = node
+              // Tilt может передавать не DOM элемент напрямую, поэтому сохраняем как есть
+              // и используем getParallaxElement() для безопасного получения DOM элемента
+              parallaxElementRef.current = node
+            }}
+            className={`tilt-wrapper parallax-effect glare-scale ${distance >= 460 ? 'pack-opened' : ''}`}
+            tiltEnable={!packOpened}
+            tiltMaxAngleX={dragginStarted ? 0 : 10}
+            tiltMaxAngleY={dragginStarted ? 0 : 10}
+            perspective={1000}
+            glareEnable={!dragginStarted}
+            glareColor={dragginStarted ? 'transparent' : 'white'}
+            scale={dragginStarted ? 1 : 1.02}
+            transitionSpeed={1000}
+          >
 
-          <div 
-            id="top" 
-            className="top" 
-            ref={topElementRef}
-            onMouseDown={handleMouseDown}
-            onTouchStart={handleTouchStart}
-            style={{ width: `calc(100% - ${distance}px)` }}
-          > 
-            <div
-              ref={angleContainerRef}
-              style={{ 
-                height: Math.max(36, distance - 36), 
-                transform: `translateX(-100%) rotateZ(${dragginStarted ? rotationAngle : 0}deg)` 
-              }}
-              className={`angle-container ${dragginStarted ? 'active' : ''}`}>
-              
               <div 
-              ref={angleElementRef}
-              style={{
-                ...(dragginStarted ? { clipPath: `polygon(${clipPath}, 100% 0, 100% 100%, 0% 100%)` } : {})
-              }}
-              className={`angle ${dragginStarted ? 'active' : ''}`}></div>
-            </div>
-          </div>
-          
-          <div id="bottom" className="bottom">
-            <div className="inner-element">
+                id="top" 
+                className={`top ${distance >= 460 ? 'pack-opened' : ''}`} 
+                ref={topElementRef}
+                onMouseDown={handleMouseDown}
+                onTouchStart={handleTouchStart}
+                style={{ width: `calc(100% - ${distance}px)` }}
+              > 
+                <div
+                  ref={angleContainerRef}
+                  style={{ 
+                    height: Math.max(36, distance - 36), 
+                    transform: `translateX(-100%) rotateZ(${dragginStarted ? rotationAngle : 0}deg)` 
+                  }}
+                  className={`angle-container ${dragginStarted ? 'active' : ''}`}>
+                  
+                  <div 
+                  ref={angleElementRef}
+                  style={{
+                    ...(dragginStarted ? { clipPath: `polygon(${clipPath}, 100% 0, 100% 100%, 0% 100%)` } : {})
+                  }}
+                  className={`angle ${dragginStarted ? 'active' : ''}`}></div>
+                </div>
+              </div>
               
-            </div>
-          </div>
-      </Tilt>
+              <div id="bottom" className="bottom">
+                <div className={`glitch-top ${packOpened ? 'pack-opened' : ''}`}></div>
+                <div className={`glitch-bottom ${packOpened ? 'pack-opened' : ''}`}></div>
+                <div className="inner-element">
+                  
+                </div>
+              </div>
+          </Tilt>
+        </div>
       </div>
       
       

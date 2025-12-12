@@ -16,13 +16,6 @@
   z-index: 2;
 }
 
-.tilt-wrapper.pack-opened {
-  transform: translate(0, 1000px) !important;
-  opacity: 0.8;
-  transition: transform 0.6s ease-in-out, opacity 0.3s ease-out 0.1s !important;
-
-}
-
 .image-container {
   position: relative;
   display: inline-block;
@@ -68,6 +61,12 @@
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   cursor: grab;
+}
+
+.top.pack-opened {
+  transform: translateX(1200px) translateY(-50px) rotate(-10deg) !important;
+  transform-origin: center center;
+  transition: transform 0.6s ease-in-out !important;
 }
 
 .top:active {
@@ -164,13 +163,35 @@
   height: 700px;
   pointer-events: none;
   transform: translateY(15%) scale(1.1);
-  transition: transform 0.6s ease-in-out;
+  transition: transform 0.2s ease-in-out;
   z-index: 0;
   perspective: 1000px;
 }
 
 .cards-container.pack-opened {
-  transform: translateY(0%) scale(0.7);
+  animation: cardsOpened 1.8s ease-in-out;
+  animation-fill-mode: both;
+}
+
+@keyframes cardsOpened {
+  0% {
+    transform: translateY(15%) scale(1.1);
+  }
+  10.7% {
+    transform: translateY(35%) scale(1);
+  }
+  25.7% {
+    transform: translateY(35%) scale(1);
+  }
+  35% {
+    transform: translateY(15%) scale(0.9);
+  }
+  83.3% {
+    transform: translateY(15%) scale(0.9);
+  }
+  100% {
+    transform: translateY(0) scale(0.9);
+  }
 }
 
 .card {
@@ -180,7 +201,7 @@
   width: 70%;
   max-width: 320px;
   height: auto;
-  transition: transform 0.6s ease-in-out 0.4s, filter 0.3s ease;
+  transition: transform 0.6s ease-in-out 1.3s, filter 0.3s ease;
   pointer-events: auto;
   cursor: pointer;
 }
@@ -292,7 +313,7 @@
   align-items: center;
   width: 473px;
   height: 718px;
-  background-image: url('/pack-bottom-1.png');
+  background-image: url('/pack-bottom-3.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: bottom;
@@ -324,12 +345,32 @@
   z-index: 1;
 }
 
-.glow-effect.pack-opened {
-  transform: translateX(-50%) translateY(calc(-40% + 1000px)) !important;
-  opacity: 0.8;
+.animation-container.pack-opened{
+  animation: packOpened 1.8s linear;
+  animation-fill-mode: both;
+}
+
+@keyframes packOpened {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+  16.7% {
+    transform: translateY(250px) scale(1.1);
+  }
+  83.3% {
+    transform: translateY(250px) scale(1.1);
+  }
+  100% {
+    transform: translateY(1250px) scale(1.1);
+  }
+}
+
+/* .animation-container.pack-opened-2 {
+  transform: translateY(1000px) translateX(-100px) rotate(-10deg) !important;
+  opacity: 1;
   transition: transform 0.4s ease-in-out, opacity 0.3s ease-out 0.1s !important;
   
-}
+} */
 
 /* Центральный источник света */
 .glow-center {
@@ -508,8 +549,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 650px;
-  height: 650px;
+  width: 850px;
+  height: 850px;
   overflow: hidden;
   background: 
     /* Горизонтальные и вертикальные лучи */
@@ -720,4 +761,74 @@
     transform: translate(-50%, -50%) scale(1.1);
     opacity: 0.6;
   }
+}
+
+.glitch-top{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/pack-bottom-3.png');
+  background-size: cover;
+  opacity: 0;
+}
+
+.glitch-bottom{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/pack-bottom-3.png');
+  opacity: 0;
+}
+.glitch-top.pack-opened{
+  filter: drop-shadow(2px 0 rgba(255, 170, 70, 1));
+    opacity: 0.7;
+    left: 4px;
+    animation: glitch-top 1s linear 0.5s 1;
+    /* clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%);
+    transform: translate(1px, 1px); */
+}
+.glitch-bottom.pack-opened{
+  filter: drop-shadow(-2px 0 rgba(255, 220, 120, 1));
+    opacity: 0.7;
+    left: -4px;
+    animation: glitch-bottom 1s linear 0.3s 1;
+    /* clip-path: polygon(0 50%, 100% 50%, 100% 75%, 0 75%);
+    transform: translate(-1px, -1px); */
+}
+@keyframes glitch-top{
+  0% {
+    clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%);
+    transform: translate(1px, 1px);
+  } 
+  15%{
+    clip-path: polygon(0 50%, 100% 50%, 100% 75%, 0 75%);
+    transform: translate(-1px, -1px);
+  }
+  30%{
+    clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%);
+    transform: translate(1px, 1px);
+  } 
+  100%{
+    clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%);
+    transform: translate(1px, 1px);
+  } 
+}
+
+@keyframes glitch-bottom{
+  0%{
+    clip-path: polygon(0 50%, 100% 50%, 100% 75%, 0 75%);
+    transform: translate(-1px, -1px);
+  } 
+  15%{
+    clip-path: polygon(0 75%, 100% 75%, 100% 100%, 0 100%);
+    transform: translate(1px, 1px);
+  }
+  30%,100%{
+    clip-path: polygon(0 50%, 100% 50%, 100% 75%, 0 75%);
+    transform: translate(-1px, -1px);
+  } 
 }
