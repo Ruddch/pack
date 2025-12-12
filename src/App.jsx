@@ -130,6 +130,15 @@ function App() {
     return `0px ${36 + rotationAngle * 0.4}px`
   }, [dragginStarted, progress.x, rotationAngle])
 
+  // Вычисляем opacity для glow-rays на основе distance
+  const glowRaysOpacity = useMemo(() => {
+    const minDistance = 36
+    const maxDistance = 473
+    // Нормализуем distance от 0 до 1
+    const normalized = Math.max(0, Math.min(1, (distance - minDistance) / (maxDistance - minDistance)))
+    return normalized
+  }, [distance])
+
   // Easing функция для плавной анимации (easeOutCubic)
   const easeOutCubic = useCallback((t) => {
     return 1 - Math.pow(1 - t, 3)
@@ -290,7 +299,23 @@ function App() {
       onTouchEnd={handleTouchEnd}
       onTouchMove={handleTouchMove}
     >
+      
       <div className="wrapper">
+      <div className={`glow-effect ${packOpened ? 'pack-opened' : ''}`}>
+        <div style={dragginStarted ? {} : {opacity: 1}} className="glow-center">
+          <div className="center-particle center-particle-1"></div>
+          <div className="center-particle center-particle-2"></div>
+          <div className="center-particle center-particle-3"></div>
+          <div className="center-particle center-particle-4"></div>
+          <div className="center-particle center-particle-5"></div>
+          <div className="center-particle center-particle-6"></div>
+          <div className="center-particle center-particle-7"></div>
+          <div className="center-particle center-particle-8"></div>
+        </div>
+        <div style={{opacity: glowRaysOpacity}} className="glow-rays"></div> 
+        <div  className={`glow-particles ${packOpened ? 'pack-opened' : ''}`}></div>
+        <div  className={`glow-rings ${packOpened ? 'pack-opened' : ''}`}></div>
+      </div>
         <div className={`cards-container ${packOpened ? 'pack-opened' : ''}`}>
             {[...Array(5)].map((_, index) => {
               const translateXValues = [-280, -165, -50, 65, 180]
