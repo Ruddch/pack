@@ -9,6 +9,7 @@ function App() {
   const [distance, setDistance] = useState(36)
   const [dragginStarted, setDragginStarted] = useState(false)
   const [packOpened, setPackOpened] = useState(false)
+  const [flippedCards, setFlippedCards] = useState(new Set())
   
   // Случайное распределение цветов свечения для 3 карт
   const [glowDistribution] = useState(() => {
@@ -285,6 +286,19 @@ function App() {
   const handleMouseUp = handleEnd
   const handleTouchEnd = handleEnd
   
+  // Обработчик клика для переворота карточки
+  const handleCardFlip = useCallback((index) => {
+    setFlippedCards(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(index)) {
+        newSet.delete(index)
+      } else {
+        newSet.add(index)
+      }
+      return newSet
+    })
+  }, [])
+  
   // Очистка при размонтировании
   useEffect(() => {
     return () => {
@@ -309,29 +323,38 @@ function App() {
       <div className="wrapper">
         <div className={`cards-container ${packOpened ? 'pack-opened' : ''}`}>
             {[...Array(5)].map((_, index) => {
-              const translateXValues = [-280, -165, -50, 65, 180]
-              const rotateValues = [-8, -6, 0, 5, 7]
-              const translateYValues = [5, 33, 50, 30, 3]
+              // Для закрытого пака используем исходную позицию, для открытого - анимация сама установит позицию
               const transform = !packOpened 
                 ? `translateX(calc(-50% + ${index * 2}px)) translateY(${50-index * 3}px) rotate(${(index - 2) * 0.5}deg)` : 
-                  `translateX(calc(${translateXValues[index]}%)) translateY(${50-translateYValues[index]}px) rotate(${rotateValues[index]}deg)`
+                  undefined
               
               // Получаем цвет свечения для этой карты (может быть null)
               const glowType = glowDistribution[index]
               const glowClass = glowType ? `glow-${glowType}` : ''
+              const isFlipped = flippedCards.has(index)
               
               return (
               <div 
                 key={index}
-                className={`card card-${index + 1} ${glowClass}`}
+                className={`card card-${index + 1} ${glowClass} ${packOpened ? `card-fallen card-fall-${index}` : ''}`}
                 style={{
                   zIndex: 50 - index,
-                  transform: transform,
-                  
+                  ...(transform && { transform }),
+                  transformStyle: 'preserve-3d',
                 }}
               >
-                <div className="card-wrapper">
-                  <img src={`${import.meta.env.BASE_URL}card1.png`} alt={`Card ${index + 1}`} />
+                <div className="card-shadow">
+                  <div 
+                    className={`card-wrapper ${isFlipped ? 'rotated' : ''}`}
+                    onClick={() => handleCardFlip(index)}
+                  >
+                    <div className="card-front">
+                      <img src={`${import.meta.env.BASE_URL}card1.png`} alt={`Card ${index + 1}`} />
+                    </div>
+                    <div className="card-back">
+                      <img src={`${import.meta.env.BASE_URL}eth.png`} alt={`Card ${index + 1}`} />
+                    </div>
+                  </div>
                 </div>
               </div>
             )})}
@@ -346,23 +369,14 @@ function App() {
           <div className="backlight-particle backlight-particle-7"></div>
           <div className="backlight-particle backlight-particle-8"></div>
         </div>
-        <div style={{opacity: 1}} className={`glow-backlight ${distance >= 460 && !isDragging ? 'pack-opened' : ''}`}>
+        <div style={{opacity: glowRaysOpacity}} className={`glow-backlight ${distance >= 460 && !isDragging ? 'pack-opened' : ''}`}>
           <div className="glow-ellipse glow-ellipse-1"></div>
           <div className="glow-ellipse glow-ellipse-2"></div>
           <div className="glow-ellipse glow-ellipse-3"></div>
-         
         </div>
         <div className={`animation-container ${distance >= 460 && !isDragging ? 'pack-opened' : ''}`}>
           <div className={`glow-effect ${distance >= 460 ? 'pack-opened' : ''}`}>
             <div style={dragginStarted ? {} : {opacity: 1}} className="glow-center">
-              <div className="-particlcentere center-particle-1"></div>
-              <div className="center-particle center-particle-2"></div>
-              <div className="center-particle center-particle-3"></div>
-              <div className="center-particle center-particle-4"></div>
-              <div className="center-particle center-particle-5"></div>
-              <div className="center-particle center-particle-6"></div>
-              <div className="center-particle center-particle-7"></div>
-              <div className="center-particle center-particle-8"></div>
             </div>
             {/* glowRaysOpacity */}
             
