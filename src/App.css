@@ -349,29 +349,20 @@
   height: 600px;
   pointer-events: none;
   z-index: 1;
+  transition: transform 0.5s ease-in-out, opacity 0.3s ease-out 0.1s !important;
+}
+
+.animation-container {
+  position: relative;
+  z-index: 4;
+  transform: translateY(0) scale(1);
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-out 0.1s !important;
 }
 
 .animation-container.pack-opened{
-  animation: packOpened 0.5s linear;
-  animation-fill-mode: both;
+  z-index: 1;
+  transform: translateY(1250px) scale(1.1);
 }
-
-@keyframes packOpened {
-  0% {
-    transform: translateY(0px) scale(1);
-  }
-  100% {
-    transform: translateY(1250px) scale(1.1);
-  }
-}
-
-/* .animation-container.pack-opened-2 {
-  transform: translateY(1000px) translateX(-100px) rotate(-10deg) !important;
-  opacity: 1;
-  transition: transform 0.4s ease-in-out, opacity 0.3s ease-out 0.1s !important;
-  
-} */
-
 /* Центральный источник света */
 .glow-center {
   position: absolute;
@@ -381,7 +372,7 @@
   width: 440px;
   height: 25px;
   background: radial-gradient(
-    ellipse 250px 25px at center,
+    ellipse 225px 25px at center,
     rgba(255, 255, 255, 1) 0%,
     rgba(255, 255, 220, 0.95) 15%,
     rgba(255, 240, 150, 0.9) 25%,
@@ -412,13 +403,125 @@
   }
 }
 
-/* Частицы, вылетающие из центра */
-.center-particle {
+/* Эффект подсветки с эллипсами */
+.glow-backlight {
+  position: absolute;
+  top:  50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  width: 600px;
+  height: 600px;
+  pointer-events: none;
+  z-index: 3;
+  /* transition: top 0.1s linear, opacity 0.1s ease-in-out; */
+}
+
+.glow-backlight.pack-opened {
+  animation: glow-backlight 2s ease-in-out;
+  animation-fill-mode: both;
+}
+
+@keyframes glow-backlight {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  40% {
+    transform: translate(-50%, -50%) scale(4);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+}
+/* Первый эллипс - большой с blur 200px */
+.glow-ellipse-1 {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 6px;
-  height: 6px;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 66%;
+  background: #ffa852;
+  border-radius: 50%;
+  filter: blur(200px);
+  z-index: 1;
+}
+
+/* Второй эллипс - поверх первого с blur 140px */
+.glow-ellipse-2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 66%;
+  background: #ffd152;
+  border-radius: 50%;
+  filter: blur(140px);
+  z-index: 2;
+}
+
+/* Третий эллипс -  Blur 30px */
+.glow-ellipse-3 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  height: 66%;
+  background: radial-gradient(
+    ellipse 85% 66% at center,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 220, 0.95) 15%,
+    rgba(255, 240, 150, 0.9) 25%,
+    rgba(255, 220, 120, 0.85) 35%,
+    rgba(255, 200, 100, 0.8) 45%,
+    rgba(255, 180, 80, 0.7) 55%,
+    rgba(255, 150, 50, 0.6) 65%,
+    rgba(255, 120, 30, 0.5) 75%,
+    rgba(255, 100, 0, 0.4) 85%,
+    rgba(255, 80, 0, 0.2) 95%,
+    transparent 100%
+  );
+  filter: blur(35px) brightness(1.2);
+  border-radius: 50%;
+  z-index: 3;
+}
+
+.glow-backlight-particles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -95%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.glow-backlight-particles.pack-opened {
+  animation: glow-backlight-particles 2s ease-in-out;
+  animation-fill-mode: both;
+}
+
+@keyframes glow-backlight-particles {
+
+  0% {
+    transform: translate(-50%, -100%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+}
+/* Частицы, разлетающиеся из центра свечения */
+.backlight-particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
@@ -430,60 +533,77 @@
     rgba(255, 180, 80, 0.7) 100%
   );
   box-shadow: 
-    0 0 8px rgba(255, 255, 255, 1),
-    0 0 16px rgba(255, 255, 200, 0.9),
-    0 0 24px rgba(255, 220, 120, 0.8),
-    0 0 32px rgba(255, 200, 100, 0.6),
-    0 0 40px rgba(255, 150, 50, 0.4);
+    0 0 15px rgba(255, 255, 255, 1),
+    0 0 30px rgba(255, 255, 200, 0.9),
+    0 0 45px rgba(255, 220, 120, 0.8),
+    0 0 60px rgba(255, 200, 100, 0.6),
+    0 0 75px rgba(255, 150, 50, 0.4);
   transform: translate(-50%, -50%);
-  animation: particleFlyOut 2s ease-out infinite;
+  animation: backlightParticleFlyOut 2s ease-out infinite;
   opacity: 0;
   filter: brightness(1.3);
+  z-index: 10;
 }
 
-.center-particle-1 {
+.backlight-particle-1 {
   animation-delay: 0s;
   animation-duration: 2s;
+  --translate-x: 400px;
+  --translate-y: -250px;
 }
 
-.center-particle-2 {
-  animation-delay: 0.25s;
+.backlight-particle-2 {
+  animation-delay: 0.2s;
   animation-duration: 2.2s;
+  --translate-x: -350px;
+  --translate-y: -280px;
 }
 
-.center-particle-3 {
-  animation-delay: 0.5s;
+.backlight-particle-3 {
+  animation-delay: 0.4s;
   animation-duration: 2.4s;
+  --translate-x: 420px;
+  --translate-y: 200px;
 }
 
-.center-particle-4 {
-  animation-delay: 0.75s;
+.backlight-particle-4 {
+  animation-delay: 0.6s;
   animation-duration: 2.1s;
+  --translate-x: -380px;
+  --translate-y: 230px;
 }
 
-.center-particle-5 {
-  animation-delay: 1s;
+.backlight-particle-5 {
+  animation-delay: 0.8s;
   animation-duration: 2.3s;
+  --translate-x: 280px;
+  --translate-y: -360px;
 }
 
-.center-particle-6 {
-  animation-delay: 1.25s;
+.backlight-particle-6 {
+  animation-delay: 1s;
   animation-duration: 2.5s;
+  --translate-x: -320px;
+  --translate-y: 340px;
 }
 
-.center-particle-7 {
-  animation-delay: 1.5s;
+.backlight-particle-7 {
+  animation-delay: 1.2s;
   animation-duration: 2.2s;
+  --translate-x: 450px;
+  --translate-y: -150px;
 }
 
-.center-particle-8 {
-  animation-delay: 1.75s;
+.backlight-particle-8 {
+  animation-delay: 1.4s;
   animation-duration: 2.4s;
+  --translate-x: -400px;
+  --translate-y: -180px;
 }
 
-@keyframes particleFlyOut {
+@keyframes backlightParticleFlyOut {
   0% {
-    transform: translate(-50%, -50%) translate(0, 0) scale(1.2);
+    transform: translate(-50%, -50%) translate(0, 0) scale(2);
     opacity: 1;
     filter: brightness(1.5);
   }
@@ -500,96 +620,6 @@
     opacity: 0;
     filter: brightness(0.8);
   }
-}
-
-/* Направления вылета частиц */
-.center-particle-1 {
-  --translate-x: 120px;
-  --translate-y: -80px;
-}
-
-.center-particle-2 {
-  --translate-x: -100px;
-  --translate-y: -90px;
-}
-
-.center-particle-3 {
-  --translate-x: 140px;
-  --translate-y: 60px;
-}
-
-.center-particle-4 {
-  --translate-x: -130px;
-  --translate-y: 70px;
-}
-
-.center-particle-5 {
-  --translate-x: 80px;
-  --translate-y: -120px;
-}
-
-.center-particle-6 {
-  --translate-x: -90px;
-  --translate-y: 110px;
-}
-
-.center-particle-7 {
-  --translate-x: 150px;
-  --translate-y: -40px;
-}
-
-.center-particle-8 {
-  --translate-x: -110px;
-  --translate-y: -50px;
-}
-
-/* Лучи света (Starburst эффект) */
-.glow-rays {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 850px;
-  height: 850px;
-  overflow: hidden;
-  background: 
-    /* Горизонтальные и вертикальные лучи */
-    linear-gradient(0deg, transparent 44%, rgba(255, 220, 120, 0.6) 47%, rgba(255, 200, 100, 0.9) 49%, rgba(255, 180, 80, 1) 50%, rgba(255, 200, 100, 0.9) 51%, rgba(255, 220, 120, 0.6) 53%, transparent 56%),
-    linear-gradient(90deg, transparent 44%, rgba(255, 220, 120, 0.6) 47%, rgba(255, 200, 100, 0.9) 49%, rgba(255, 180, 80, 1) 50%, rgba(255, 200, 100, 0.9) 51%, rgba(255, 220, 120, 0.6) 53%, transparent 56%),
-    /* Диагональные лучи */
-    linear-gradient(45deg, transparent 46%, rgba(255, 210, 110, 0.5) 48%, rgba(255, 180, 80, 0.8) 49.5%, rgba(255, 150, 50, 0.9) 50%, rgba(255, 180, 80, 0.8) 50.5%, rgba(255, 210, 110, 0.5) 52%, transparent 54%),
-    linear-gradient(-45deg, transparent 46%, rgba(255, 210, 110, 0.5) 48%, rgba(255, 180, 80, 0.8) 49.5%, rgba(255, 150, 50, 0.9) 50%, rgba(255, 180, 80, 0.8) 50.5%, rgba(255, 210, 110, 0.5) 52%, transparent 54%),
-    /* Дополнительные лучи под углами */
-    linear-gradient(22.5deg, transparent 47%, rgba(255, 200, 100, 0.5) 48.5%, rgba(255, 170, 70, 0.7) 49.5%, rgba(255, 160, 60, 0.8) 50%, rgba(255, 170, 70, 0.7) 50.5%, rgba(255, 200, 100, 0.5) 51.5%, transparent 53%), 
-    linear-gradient(-22.5deg, transparent 47%, rgba(255, 200, 100, 0.5) 48.5%, rgba(255, 170, 70, 0.7) 49.5%, rgba(255, 160, 60, 0.8) 50%, rgba(255, 170, 70, 0.7) 50.5%, rgba(255, 200, 100, 0.5) 51.5%, transparent 53%),
-    linear-gradient(67.5deg, transparent 47%, rgba(255, 200, 100, 0.5) 48.5%, rgba(255, 170, 70, 0.7) 49.5%, rgba(255, 160, 60, 0.8) 50%, rgba(255, 170, 70, 0.7) 50.5%, rgba(255, 200, 100, 0.5) 51.5%, transparent 53%),
-    linear-gradient(-67.5deg, transparent 47%, rgba(255, 200, 100, 0.5) 48.5%, rgba(255, 170, 70, 0.7) 49.5%, rgba(255, 160, 60, 0.8) 50%, rgba(255, 170, 70, 0.7) 50.5%, rgba(255, 200, 100, 0.5) 51.5%, transparent 53%),
-    /* Центральное радиальное свечение */
-    radial-gradient(
-      circle at center,
-      rgba(255, 255, 220, 0.95) 0%,
-      rgba(255, 240, 150, 0.9) 10%,
-      rgba(255, 220, 120, 0.85) 18%,
-      rgba(255, 200, 100, 0.8) 25%,
-      rgba(255, 180, 80, 0.75) 32%,
-      rgba(255, 160, 60, 0.7) 40%,
-      rgba(255, 140, 40, 0.6) 50%,
-      rgba(255, 120, 30, 0.5) 60%,
-      rgba(255, 100, 0, 0.1) 70%,
-      rgba(255, 80, 0, 0.0) 80%,
-      rgba(255, 60, 0, 0) 90%,
-      transparent 100%
-    );
-  filter: blur(15px) brightness(1.1);
-  z-index: 5;
-  transition: opacity 0.1s ease-in-out;
-  -webkit-mask-image: radial-gradient(
-    ellipse at center,
-    black 15%,
-    transparent 70%
-  );
-  -webkit-mask-composite: intersect;
-  mask-composite: intersect;
 }
 
 /* Частицы и искры */

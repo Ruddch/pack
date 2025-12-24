@@ -136,7 +136,10 @@ function App() {
     const maxDistance = 473
     // Нормализуем distance от 0 до 1
     const normalized = Math.max(0, Math.min(1, (distance - minDistance) / (maxDistance - minDistance)))
-    return normalized
+    // Применяем easing: быстрее в начале, медленнее в конце (ease-out)
+    // Используем квадратичную функцию для плавного замедления
+    const eased = 1 - Math.pow(1 - normalized, 2)
+    return eased
   }, [distance])
 
   // Easing функция для плавной анимации (easeOutCubic)
@@ -333,10 +336,26 @@ function App() {
               </div>
             )})}
         </div>
+        <div style={{opacity: glowRaysOpacity}}  className={`glow-backlight-particles ${distance >= 460 && !isDragging ? 'pack-opened' : ''}`}>
+          <div className="backlight-particle backlight-particle-1"></div>
+          <div className="backlight-particle backlight-particle-2"></div>
+          <div className="backlight-particle backlight-particle-3"></div>
+          <div className="backlight-particle backlight-particle-4"></div>
+          <div className="backlight-particle backlight-particle-5"></div>
+          <div className="backlight-particle backlight-particle-6"></div>
+          <div className="backlight-particle backlight-particle-7"></div>
+          <div className="backlight-particle backlight-particle-8"></div>
+        </div>
+        <div style={{opacity: 1}} className={`glow-backlight ${distance >= 460 && !isDragging ? 'pack-opened' : ''}`}>
+          <div className="glow-ellipse glow-ellipse-1"></div>
+          <div className="glow-ellipse glow-ellipse-2"></div>
+          <div className="glow-ellipse glow-ellipse-3"></div>
+         
+        </div>
         <div className={`animation-container ${distance >= 460 && !isDragging ? 'pack-opened' : ''}`}>
           <div className={`glow-effect ${distance >= 460 ? 'pack-opened' : ''}`}>
             <div style={dragginStarted ? {} : {opacity: 1}} className="glow-center">
-              <div className="center-particle center-particle-1"></div>
+              <div className="-particlcentere center-particle-1"></div>
               <div className="center-particle center-particle-2"></div>
               <div className="center-particle center-particle-3"></div>
               <div className="center-particle center-particle-4"></div>
@@ -345,9 +364,10 @@ function App() {
               <div className="center-particle center-particle-7"></div>
               <div className="center-particle center-particle-8"></div>
             </div>
-            <div style={{opacity: glowRaysOpacity}} className="glow-rays"></div> 
-            <div  className={`glow-particles ${packOpened ? 'pack-opened' : ''}`}></div>
-            <div  className={`glow-rings ${packOpened ? 'pack-opened' : ''}`}></div>
+            {/* glowRaysOpacity */}
+            
+            {/* <div  className={`glow-particles ${packOpened ? 'pack-opened' : ''}`}></div>
+            <div  className={`glow-rings ${packOpened ? 'pack-opened' : ''}`}></div> */}
           </div>
           <Tilt
             ref={(node) => {
