@@ -156,6 +156,7 @@
 }
 
 .cards-container {
+  opacity: 0;
   position: absolute;
   top: 0;
   left: 0;
@@ -175,22 +176,27 @@
 
 @keyframes cardsOpened {
   0% {
-    transform: translateY(15%) scale(1.1);
+    transform: translateY(25%) scale(1.1);
   }
   10.7% {
     transform: translateY(35%) scale(1);
+    opacity: 0;
   }
   25.7% {
     transform: translateY(35%) scale(1);
+    opacity: 1;
   }
   35% {
     transform: translateY(15%) scale(0.9);
+    opacity: 1;
   }
   83.3% {
     transform: translateY(15%) scale(0.9);
+    opacity: 1;
   }
   100% {
     transform: translateY(0) scale(0.9);
+    opacity: 1;
   }
 }
 
@@ -346,19 +352,13 @@
 }
 
 .animation-container.pack-opened{
-  animation: packOpened 1.8s linear;
+  animation: packOpened 0.5s linear;
   animation-fill-mode: both;
 }
 
 @keyframes packOpened {
   0% {
     transform: translateY(0px) scale(1);
-  }
-  16.7% {
-    transform: translateY(250px) scale(1.1);
-  }
-  83.3% {
-    transform: translateY(250px) scale(1.1);
   }
   100% {
     transform: translateY(1250px) scale(1.1);
@@ -763,72 +763,3 @@
   }
 }
 
-.glitch-top{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('/pack-bottom-3.png');
-  background-size: cover;
-  opacity: 0;
-}
-
-.glitch-bottom{
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('/pack-bottom-3.png');
-  opacity: 0;
-}
-.glitch-top.pack-opened{
-  filter: drop-shadow(2px 0 rgba(255, 170, 70, 1));
-    opacity: 0.7;
-    left: 4px;
-    animation: glitch-top 1s linear 0.5s 1;
-    /* clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%);
-    transform: translate(1px, 1px); */
-}
-.glitch-bottom.pack-opened{
-  filter: drop-shadow(-2px 0 rgba(255, 220, 120, 1));
-    opacity: 0.7;
-    left: -4px;
-    animation: glitch-bottom 1s linear 0.3s 1;
-    /* clip-path: polygon(0 50%, 100% 50%, 100% 75%, 0 75%);
-    transform: translate(-1px, -1px); */
-}
-@keyframes glitch-top{
-  0% {
-    clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%);
-    transform: translate(1px, 1px);
-  } 
-  15%{
-    clip-path: polygon(0 50%, 100% 50%, 100% 75%, 0 75%);
-    transform: translate(-1px, -1px);
-  }
-  30%{
-    clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%);
-    transform: translate(1px, 1px);
-  } 
-  100%{
-    clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%);
-    transform: translate(1px, 1px);
-  } 
-}
-
-@keyframes glitch-bottom{
-  0%{
-    clip-path: polygon(0 50%, 100% 50%, 100% 75%, 0 75%);
-    transform: translate(-1px, -1px);
-  } 
-  15%{
-    clip-path: polygon(0 75%, 100% 75%, 100% 100%, 0 100%);
-    transform: translate(1px, 1px);
-  }
-  30%,100%{
-    clip-path: polygon(0 50%, 100% 50%, 100% 75%, 0 75%);
-    transform: translate(-1px, -1px);
-  } 
-}

@@ -393,8 +393,6 @@ function App() {
               </div>
               
               <div id="bottom" className="bottom">
-                <div className={`glitch-top ${packOpened ? 'pack-opened' : ''}`}></div>
-                <div className={`glitch-bottom ${packOpened ? 'pack-opened' : ''}`}></div>
                 <div className="inner-element">
                   
                 </div>
