@@ -10,32 +10,10 @@ function App() {
   const [dragginStarted, setDragginStarted] = useState(false)
   const [packOpened, setPackOpened] = useState(false)
   const [flippedCards, setFlippedCards] = useState(new Set())
+  const [flippingCards, setFlippingCards] = useState(new Set())
   
-  // Случайное распределение цветов свечения для 3 карт
-  const [glowDistribution] = useState(() => {
-    const indices = [0, 1, 2, 3, 4]
-    const colors = ['gold', 'purple', 'blue']
-    
-    // Перемешиваем индексы
-    for (let i = indices.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [indices[i], indices[j]] = [indices[j], indices[i]]
-    }
-    
-    // Перемешиваем цвета
-    for (let i = colors.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [colors[i], colors[j]] = [colors[j], colors[i]]
-    }
-    
-    // Создаем распределение: выбираем 3 случайных карты и назначаем им цвета
-    const distribution = Array(5).fill(null)
-    for (let i = 0; i < 3; i++) {
-      distribution[indices[i]] = colors[i] 
-    }
-    
-    return distribution
-  })
+
+  const glowDistribution = ['gold', 'purple', 'blue', 'silver', 'silver']
   
   const containerRef = useRef(null)
   const packRectRef = useRef(null)
@@ -288,16 +266,17 @@ function App() {
   
   // Обработчик клика для переворота карточки
   const handleCardFlip = useCallback((index) => {
-    setFlippedCards(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(index)) {
-        newSet.delete(index)
-      } else {
-        newSet.add(index)
-      }
-      return newSet
-    })
-  }, [])
+  // Проверяем, что карта еще не перевернута
+  if (flippedCards.has(index)) return
+  
+  // Добавляем в flipping для применения scale + glow
+  setFlippingCards(prev => new Set(prev).add(index))
+  
+  // Через 500ms (длительность анимации) добавляем в flipped
+  setTimeout(() => {
+    setFlippedCards(prev => new Set(prev).add(index))
+  }, 500)
+}, [flippedCards])
   
   // Очистка при размонтировании
   useEffect(() => {
@@ -310,6 +289,65 @@ function App() {
       }
     }
   }, [])
+
+  // Обработчик пробела: открытие пака и переворот карт
+  useEffect(() => {
+  const handleKeyDown = (e) => {
+    if (e.code === 'Space') {
+      e.preventDefault()
+      
+      // 🎴 ЕСЛИ ПАК ЕЩЕ НЕ ОТКРЫТ - открываем его
+      if (!packOpened && !animationRafIdRef.current) {
+        // Устанавливаем флаг начала перетаскивания
+        setDragginStarted(true)
+        
+        // Отменяем текущий RAF если есть
+        if (rafIdRef.current) {
+          cancelAnimationFrame(rafIdRef.current)
+          rafIdRef.current = null
+        }
+        
+        // Сбрасываем isDragging если был активен
+        if (isDragging) {
+          setIsDragging(false)
+        }
+        
+        // Получаем координаты пака для расчета угла
+        const packElement = getParallaxElement()
+        if (packElement) {
+          const rect = packElement.getBoundingClientRect()
+          packRectRef.current = rect
+          const relativeX = rect.left
+          const relativeY = rect.top
+          setMousePos({ x: relativeX, y: relativeY })
+        }
+        
+        // Сохраняем начальные значения для анимации
+        animationStartProgressRef.current = progress.x
+        animationStartDistanceRef.current = distance
+        animationStartTimeRef.current = null
+        
+        // Запускаем анимацию
+        animateToEnd()
+      } 
+      // 🔄 ЕСЛИ ПАК УЖЕ ОТКРЫТ - переворачиваем карты
+      else if (packOpened) {
+        // Находим первую неперевернутую карту слева направо (0 -> 4)
+        for (let i = 0; i < 5; i++) {
+          if (!flippedCards.has(i)) {
+            setFlippedCards(prev => new Set(prev).add(i))
+            break // Переворачиваем только одну
+          }
+        }
+      }
+    }
+  }
+  
+  window.addEventListener('keydown', handleKeyDown)
+  return () => {
+    window.removeEventListener('keydown', handleKeyDown)
+  }
+}, [packOpened, progress.x, distance, animateToEnd, isDragging, flippedCards])
 
   return (
     <div 
@@ -331,12 +369,13 @@ function App() {
               // Получаем цвет свечения для этой карты (может быть null)
               const glowType = glowDistribution[index]
               const glowClass = glowType ? `glow-${glowType}` : ''
+              const isFlipping = flippingCards.has(index)
               const isFlipped = flippedCards.has(index)
               
               return (
               <div 
                 key={index}
-                className={`card card-${index + 1} ${glowClass} ${packOpened ? `card-fallen card-fall-${index}` : ''}`}
+                className={`card card-${index + 1} ${glowClass} ${isFlipping ? 'flipping' : ''} ${isFlipped ? 'flipped' : ''} ${packOpened ? `card-fallen card-fall-${index}` : ''}`}
                 style={{
                   zIndex: 50 - index,
                   ...(transform && { transform }),
@@ -347,12 +386,16 @@ function App() {
                   <div 
                     className={`card-wrapper ${isFlipped ? 'rotated' : ''}`}
                     onClick={() => handleCardFlip(index)}
+                    onDragStart={(e) => e.preventDefault()}
+                    style={{ pointerEvents: isFlipped ? 'none' : 'auto' }}
                   >
                     <div className="card-front">
-                      <img src={`${import.meta.env.BASE_URL}card1.png`} alt={`Card ${index + 1}`} />
+                      <img src={`${import.meta.env.BASE_URL}card1.png`} alt={`Card ${index + 1}`}
+                      draggable={false} />
                     </div>
                     <div className="card-back">
-                      <img src={`${import.meta.env.BASE_URL}eth.png`} alt={`Card ${index + 1}`} />
+                      <img src={`${import.meta.env.BASE_URL}eth.png`} alt={`Card ${index + 1}`}
+                      draggable={false} />
                     </div>
                   </div>
                 </div>
