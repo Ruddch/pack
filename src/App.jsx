@@ -295,6 +295,11 @@ function App() {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.code === 'Space') {
+        // Игнорируем повторные срабатывания при удержании клавиши
+        if (e.repeat) {
+          return
+        }
+        
         console.log('space')
         e.preventDefault()
         
