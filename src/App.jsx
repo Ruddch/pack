@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import Tilt from 'react-parallax-tilt'
 import Card from './Card'
 import './App.css'
+import wooshSound from '/sounds/woosh_3.mp3'
+import magicSound from '/sounds/magic_3.mp3'
 
 function App() {
   const [isDragging, setIsDragging] = useState(false)
@@ -133,18 +135,17 @@ function App() {
   // Инициализация звуков
   useEffect(() => {
     // Whoosh звук для момента открытия
-    packUnwrapAudioRef.current = new Audio('/sounds/woosh_3.mp3')
+    packUnwrapAudioRef.current = new Audio(wooshSound)
     packUnwrapAudioRef.current.preload = 'auto'
     packUnwrapAudioRef.current.volume = 0.2
     
     // Магический loop-звук
-    magicAudioRef.current = new Audio('/sounds/magic_3.mp3')
+    magicAudioRef.current = new Audio(magicSound)
     magicAudioRef.current.preload = 'auto'
-    magicAudioRef.current.loop = true // Зацикливаем
-    magicAudioRef.current.volume = 0 // Начинаем с нуля
+    magicAudioRef.current.loop = true
+    magicAudioRef.current.volume = 0
     
     return () => {
-      // Очистка
       if (packUnwrapAudioRef.current) {
         packUnwrapAudioRef.current.pause()
         packUnwrapAudioRef.current = null
