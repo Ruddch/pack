@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import Tilt from 'react-parallax-tilt'
+import Card from './Card'
 import './App.css'
 
 function App() {
@@ -266,17 +267,17 @@ function App() {
   
   // Обработчик клика для переворота карточки
   const handleCardFlip = useCallback((index) => {
-  // Проверяем, что карта еще не перевернута
-  if (flippedCards.has(index)) return
-  
-  // Добавляем в flipping для применения scale + glow
-  setFlippingCards(prev => new Set(prev).add(index))
-  
-  // Через 500ms (длительность анимации) добавляем в flipped
-  setTimeout(() => {
-    setFlippedCards(prev => new Set(prev).add(index))
-  }, 500)
-}, [flippedCards])
+    // Проверяем, что карта еще не перевернута
+    if (flippedCards.has(index)) return
+    
+    // Добавляем в flipping для применения scale + glow
+    setFlippingCards(prev => new Set(prev).add(index))
+    
+    // Через 500ms (длительность анимации) добавляем в flipped
+    setTimeout(() => {
+      setFlippedCards(prev => new Set(prev).add(index))
+    }, 0)
+  }, [flippedCards])
   
   // Очистка при размонтировании
   useEffect(() => {
@@ -292,63 +293,63 @@ function App() {
 
   // Обработчик пробела: открытие пака и переворот карт
   useEffect(() => {
-  const handleKeyDown = (e) => {
-    if (e.code === 'Space') {
-      e.preventDefault()
-      
-      // 🎴 ЕСЛИ ПАК ЕЩЕ НЕ ОТКРЫТ - открываем его
-      if (!packOpened && !animationRafIdRef.current) {
-        // Устанавливаем флаг начала перетаскивания
-        setDragginStarted(true)
+    const handleKeyDown = (e) => {
+      if (e.code === 'Space') {
+        console.log('space')
+        e.preventDefault()
         
-        // Отменяем текущий RAF если есть
-        if (rafIdRef.current) {
-          cancelAnimationFrame(rafIdRef.current)
-          rafIdRef.current = null
-        }
-        
-        // Сбрасываем isDragging если был активен
-        if (isDragging) {
-          setIsDragging(false)
-        }
-        
-        // Получаем координаты пака для расчета угла
-        const packElement = getParallaxElement()
-        if (packElement) {
-          const rect = packElement.getBoundingClientRect()
-          packRectRef.current = rect
-          const relativeX = rect.left
-          const relativeY = rect.top
-          setMousePos({ x: relativeX, y: relativeY })
-        }
-        
-        // Сохраняем начальные значения для анимации
-        animationStartProgressRef.current = progress.x
-        animationStartDistanceRef.current = distance
-        animationStartTimeRef.current = null
-        
-        // Запускаем анимацию
-        animateToEnd()
-      } 
-      // 🔄 ЕСЛИ ПАК УЖЕ ОТКРЫТ - переворачиваем карты
-      else if (packOpened) {
-        // Находим первую неперевернутую карту слева направо (0 -> 4)
-        for (let i = 0; i < 5; i++) {
-          if (!flippedCards.has(i)) {
-            setFlippedCards(prev => new Set(prev).add(i))
-            break // Переворачиваем только одну
+        // 🎴 ЕСЛИ ПАК ЕЩЕ НЕ ОТКРЫТ - открываем его
+        if (!packOpened && !animationRafIdRef.current) {
+          // Устанавливаем флаг начала перетаскивания
+          setDragginStarted(true)
+          
+          // Отменяем текущий RAF если есть
+          if (rafIdRef.current) {
+            cancelAnimationFrame(rafIdRef.current)
+            rafIdRef.current = null
+          }
+          
+          // Сбрасываем isDragging если был активен
+          if (isDragging) {
+            setIsDragging(false)
+          }
+          
+          // Получаем координаты пака для расчета угла
+          const packElement = getParallaxElement()
+          if (packElement) {
+            const rect = packElement.getBoundingClientRect()
+            packRectRef.current = rect
+            const relativeX = rect.left
+            const relativeY = rect.top
+            setMousePos({ x: relativeX, y: relativeY })
+          }
+          
+          // Сохраняем начальные значения для анимации
+          animationStartProgressRef.current = progress.x
+          animationStartDistanceRef.current = distance
+          animationStartTimeRef.current = null
+          
+          // Запускаем анимацию
+          animateToEnd()
+        } 
+        // 🔄 ЕСЛИ ПАК УЖЕ ОТКРЫТ - переворачиваем карты
+        else if (packOpened) {
+          // Находим первую неперевернутую карту слева направо (0 -> 4)
+          for (let i = 0; i < 5; i++) {
+            if (!flippedCards.has(i)) {
+              setFlippedCards(prev => new Set(prev).add(i))
+              break // Переворачиваем только одну
+            }
           }
         }
       }
     }
-  }
-  
-  window.addEventListener('keydown', handleKeyDown)
-  return () => {
-    window.removeEventListener('keydown', handleKeyDown)
-  }
-}, [packOpened, progress.x, distance, animateToEnd, isDragging, flippedCards])
-
+    
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [packOpened, progress.x, distance, animateToEnd, isDragging, flippedCards])
   return (
     <div 
       className="app" 
@@ -373,34 +374,18 @@ function App() {
               const isFlipped = flippedCards.has(index)
               
               return (
-              <div 
-                key={index}
-                className={`card card-${index + 1} ${glowClass} ${isFlipping ? 'flipping' : ''} ${isFlipped ? 'flipped' : ''} ${packOpened ? `card-fallen card-fall-${index}` : ''}`}
-                style={{
-                  zIndex: 50 - index,
-                  ...(transform && { transform }),
-                  transformStyle: 'preserve-3d',
-                }}
-              >
-                <div className="card-shadow">
-                  <div 
-                    className={`card-wrapper ${isFlipped ? 'rotated' : ''}`}
-                    onClick={() => handleCardFlip(index)}
-                    onDragStart={(e) => e.preventDefault()}
-                    style={{ pointerEvents: isFlipped ? 'none' : 'auto' }}
-                  >
-                    <div className="card-front">
-                      <img src={`${import.meta.env.BASE_URL}card1.png`} alt={`Card ${index + 1}`}
-                      draggable={false} />
-                    </div>
-                    <div className="card-back">
-                      <img src={`${import.meta.env.BASE_URL}eth.png`} alt={`Card ${index + 1}`}
-                      draggable={false} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )})}
+                <Card
+                  key={index}
+                  index={index}
+                  transform={transform}
+                  glowClass={glowClass}
+                  isFlipping={isFlipping}
+                  isFlipped={isFlipped}
+                  packOpened={packOpened}
+                  onFlip={handleCardFlip}
+                />
+              )
+            })}
         </div>
         <div style={{opacity: glowRaysOpacity}}  className={`glow-backlight-particles ${distance >= 460 && !isDragging ? 'pack-opened' : ''}`}>
           <div className="backlight-particle backlight-particle-1"></div>
@@ -439,7 +424,9 @@ function App() {
             tiltMaxAngleY={dragginStarted ? 0 : 10}
             perspective={1000}
             glareEnable={!dragginStarted}
-            glareColor={dragginStarted ? 'transparent' : 'white'}
+            glareColor={dragginStarted ? 'transparent' : 'rgba(250, 195, 132, 0.3)'}
+            glarePosition='bottom'
+            glareBorderRadius='10px'
             scale={dragginStarted ? 1 : 1.02}
             transitionSpeed={1000}
           >
