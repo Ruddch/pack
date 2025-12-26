@@ -355,6 +355,7 @@ function App() {
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [packOpened, progress.x, distance, animateToEnd, isDragging, flippedCards])
+
   return (
     <div 
       className="app" 

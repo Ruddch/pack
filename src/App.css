@@ -373,8 +373,8 @@
   mix-blend-mode: color-dodge;
   opacity: 0.75;
   transform: translateZ(30px);
-  mask-image: url("pattern.svg");
-  -webkit-mask-image: url("pattern.svg");
+  mask-image: var(--pattern-url, url("/pattern.svg"));
+  -webkit-mask-image: var(--pattern-url, url("/pattern.svg"));
   mask-size: 100% 100%;
   -webkit-mask-size: 100% 100%;
   mask-position: center;
