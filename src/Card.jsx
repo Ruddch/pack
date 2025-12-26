@@ -14,13 +14,11 @@ const Card = ({
 
   const handleCardMouseEnter = () => {
     if (!cardRef.current) return
-    
     cardRef.current.style.transition = 'transform 0.15s ease-out'
   }
 
   const handleCardMouseMove = (e) => {
     if (!cardRef.current || !foilRef.current) return
-
 
     const card = cardRef.current
     const foil = foilRef.current
@@ -32,8 +30,10 @@ const Card = ({
     const midX = rect.width / 2
     const midY = rect.height / 2
 
-    const rotateY = ((x - midX) / midX) * 10
-    const rotateX = -((y - midY) / midY) * 10
+    const tiltIntensity = packOpened ? 0.4 : 1.0
+    
+    const rotateY = ((x - midX) / midX) * 10 * tiltIntensity
+    const rotateX = -((y - midY) / midY) * 10 * tiltIntensity
 
     card.style.transform = `
       ${transform ?? ""}
@@ -51,9 +51,7 @@ const Card = ({
     if (!cardRef.current) return
 
     const card = cardRef.current
-    
     card.style.transition = 'transform 0.5s ease-out'
-    
     card.style.transform = transform ?? ""
   }
 
@@ -85,7 +83,6 @@ const Card = ({
             <div className="card-back">
               <img src={`${import.meta.env.BASE_URL}eth.png`} alt={`Card ${index + 1}`}
               draggable={false} />
-              
             </div>
           </div>
         </div>
@@ -95,4 +92,3 @@ const Card = ({
 }
 
 export default Card
-

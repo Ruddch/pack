@@ -387,156 +387,70 @@
 @keyframes smoothGoldGlow {
   0%, 100% {
     filter: 
-      drop-shadow(0 0 8px rgba(255, 215, 0, 0.8))
-      drop-shadow(0 0 10px rgba(255, 180, 0, 0.6))
-      drop-shadow(0 0 16px rgba(255, 140, 0, 0.4))
+      drop-shadow(0 0 8px rgba(255, 185, 100, 0.8))
+      drop-shadow(0 0 10px rgba(245, 170, 85, 0.6))
+      drop-shadow(0 0 16px rgba(235, 155, 70, 0.4))
       brightness(1.05);
   }
-  /* 25% {
-    filter: 
-      drop-shadow(0 0 12px rgba(255, 200, 0, 0.9))
-      drop-shadow(0 0 22px rgba(255, 170, 0, 0.7))
-      drop-shadow(0 0 32px rgba(255, 130, 0, 0.5))
-      brightness(1.1);
-  } */
   50% {
     filter: 
-      drop-shadow(0 0 15px rgba(255, 215, 0, 1))
-      drop-shadow(0 0 28px rgba(255, 180, 0, 0.8))
-      drop-shadow(0 0 36px rgba(255, 140, 0, 0.6))
+      drop-shadow(0 0 15px rgba(255, 195, 110, 1))
+      drop-shadow(0 0 28px rgba(245, 175, 95, 0.8))
+      drop-shadow(0 0 36px rgba(235, 160, 80, 0.6))
       brightness(1.12);
   }
-  /* 75% {
-    filter: 
-      drop-shadow(0 0 12px rgba(255, 200, 0, 0.9))
-      drop-shadow(0 0 22px rgba(255, 170, 0, 0.7))
-      drop-shadow(0 0 32px rgba(255, 130, 0, 0.5))
-      brightness(1.1);
-  }
-  100% {
-    filter: 
-      drop-shadow(0 0 8px rgba(255, 215, 0, 0.8))
-      drop-shadow(0 0 16px rgba(255, 180, 0, 0.6))
-      drop-shadow(0 0 24px rgba(255, 140, 0, 0.4))
-      brightness(1.05);
-  } */
 }
 
 /* Фиолетовое пульсирующее свечение */
 @keyframes smoothPurpleGlow {
   0%, 100% {
     filter: 
-      drop-shadow(0 0 8px rgba(160, 100, 230, 0.6))
-      drop-shadow(0 0 10px rgba(150, 90, 220, 0.6))
-      drop-shadow(0 0 16px rgba(138, 80, 210, 0.4))
+      drop-shadow(0 0 10px rgba(175, 145, 205, 0.6))
+      drop-shadow(0 0 16px rgba(175, 145, 205, 0.4))
       brightness(1.05);
   }
-  /* 25% {
-    filter: 
-      drop-shadow(0 0 12px rgba(170, 110, 240, 0.75))
-      drop-shadow(0 0 22px rgba(160, 100, 230, 0.7))
-      drop-shadow(0 0 32px rgba(148, 90, 220, 0.5))
-      brightness(1.1);
-  } */
   50% {
     filter: 
-      drop-shadow(0 0 15px rgba(180, 120, 250, 0.85))
-      drop-shadow(0 0 28px rgba(170, 110, 240, 0.75))
-      drop-shadow(0 0 36px rgba(158, 100, 230, 0.6))
+      drop-shadow(0 0 28px rgba(182, 152, 212, 0.75))
+      drop-shadow(0 0 36px rgba(182, 152, 212, 0.6))
       brightness(1.12);
   }
-  /* 75% {
-    filter: 
-      drop-shadow(0 0 12px rgba(170, 110, 240, 0.75))
-      drop-shadow(0 0 22px rgba(160, 100, 230, 0.7))
-      drop-shadow(0 0 32px rgba(148, 90, 220, 0.5))
-      brightness(1.1);
-  }
-  100% {
-    filter: 
-      drop-shadow(0 0 8px rgba(160, 100, 230, 0.6))
-      drop-shadow(0 0 16px rgba(150, 90, 220, 0.6))
-      drop-shadow(0 0 24px rgba(138, 80, 210, 0.4))
-      brightness(1.05);
-  } */
 }
 
 /* Синее пульсирующее свечение */
 @keyframes smoothBlueGlow {
   0%, 100% {
     filter: 
-      drop-shadow(0 0 8px rgba(100, 180, 255, 0.8))
-      drop-shadow(0 0 10px rgba(80, 160, 240, 0.6))
-      drop-shadow(0 0 16px rgba(60, 140, 220, 0.4))
+      drop-shadow(0 0 8px rgba(140, 190, 235, 0.8))
+      drop-shadow(0 0 10px rgba(130, 180, 225, 0.6))
+      drop-shadow(0 0 16px rgba(120, 170, 215, 0.4))
       brightness(1.05);
   }
-  /* 25% {
-    filter: 
-      drop-shadow(0 0 12px rgba(110, 190, 255, 0.9))
-      drop-shadow(0 0 22px rgba(90, 170, 245, 0.7))
-      drop-shadow(0 0 32px rgba(70, 150, 230, 0.5))
-      brightness(1.1);
-  } */
   50% {
     filter: 
-      drop-shadow(0 0 12px rgba(120, 200, 255, 1))
-      drop-shadow(0 0 25px rgba(100, 180, 250, 0.8))
-      drop-shadow(0 0 30px rgba(80, 160, 240, 0.6))
+      drop-shadow(0 0 12px rgba(150, 200, 240, 1))
+      drop-shadow(0 0 25px rgba(140, 190, 230, 0.8))
+      drop-shadow(0 0 30px rgba(130, 180, 220, 0.6))
       brightness(1.12);
   }
-  /* 75% {
-    filter: 
-      drop-shadow(0 0 12px rgba(110, 190, 255, 0.9))
-      drop-shadow(0 0 22px rgba(90, 170, 245, 0.7))
-      drop-shadow(0 0 32px rgba(70, 150, 230, 0.5))
-      brightness(1.1);
-  }
-  100% {
-    filter: 
-      drop-shadow(0 0 8px rgba(100, 180, 255, 0.8))
-      drop-shadow(0 0 16px rgba(80, 160, 240, 0.6))
-      drop-shadow(0 0 24px rgba(60, 140, 220, 0.4))
-      brightness(1.05);
-  } */
 }
 
 /* Серебряное пульсирующее свечение */
 @keyframes smoothSilverGlow {
   0%, 100% {
     filter: 
-      drop-shadow(0 0 4px rgba(220, 230, 240, 0.55))
-      drop-shadow(0 0 8px rgba(200, 210, 220, 0.6))
-      drop-shadow(0 0 16px rgba(180, 190, 200, 0.4))
+      drop-shadow(0 0 6px rgba(220, 230, 240, 0.55))
+      drop-shadow(0 0 12px rgba(200, 210, 220, 0.6))
+      drop-shadow(0 0 22px rgba(180, 190, 200, 0.4))
       brightness(1.05);
   }
-  /* 25% {
-    filter: 
-      drop-shadow(0 0 12px rgba(230, 240, 250, 0.65))
-      drop-shadow(0 0 22px rgba(210, 220, 230, 0.7))
-      drop-shadow(0 0 32px rgba(190, 200, 210, 0.5))
-      brightness(1.1);
-  } */
   50% {
     filter: 
-      drop-shadow(0 0 8px rgba(240, 250, 255, 0.75))
-      drop-shadow(0 0 8px rgba(220, 230, 240, 0.75))
-      drop-shadow(0 0 16px rgba(200, 210, 220, 0.6))
+      drop-shadow(0 0 12px rgba(240, 250, 255, 0.75))
+      drop-shadow(0 0 16px rgba(220, 230, 240, 0.75))
+      drop-shadow(0 0 28px rgba(200, 210, 220, 0.6))
       brightness(1.12);
   }
-  /* 75% {
-    filter: 
-      drop-shadow(0 0 12px rgba(230, 240, 250, 0.65))
-      drop-shadow(0 0 22px rgba(210, 220, 230, 0.7))
-      drop-shadow(0 0 32px rgba(190, 200, 210, 0.5))
-      brightness(1.1);
-  } */
-  /* 100% {
-    filter: 
-      drop-shadow(0 0 8px rgba(220, 230, 240, 0.55))
-      drop-shadow(0 0 16px rgba(200, 210, 220, 0.6))
-      drop-shadow(0 0 24px rgba(180, 190, 200, 0.4))
-      brightness(1.05);
-  } */
 }
 
 .card.glow-gold:hover:not(.flipped):not(.flipping) .card-shadow {

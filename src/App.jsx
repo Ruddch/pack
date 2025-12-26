@@ -27,6 +27,9 @@ function App() {
   const animationStartTimeRef = useRef(null)
   const animationStartProgressRef = useRef(null)
   const animationStartDistanceRef = useRef(null)
+  const packUnwrapAudioRef = useRef(null)
+  const magicAudioRef = useRef(null)
+  const fadeIntervalRef = useRef(null) 
   
   // Вспомогательная функция для безопасного получения DOM элемента
   const getParallaxElement = useCallback(() => {
@@ -127,11 +130,96 @@ function App() {
     return 1 - Math.pow(1 - t, 3)
   }, [])
 
+  // Инициализация звуков
+  useEffect(() => {
+    // Whoosh звук для момента открытия
+    packUnwrapAudioRef.current = new Audio('/sounds/woosh_3.mp3')
+    packUnwrapAudioRef.current.preload = 'auto'
+    packUnwrapAudioRef.current.volume = 0.2
+    
+    // Магический loop-звук
+    magicAudioRef.current = new Audio('/sounds/magic_3.mp3')
+    magicAudioRef.current.preload = 'auto'
+    magicAudioRef.current.loop = true // Зацикливаем
+    magicAudioRef.current.volume = 0 // Начинаем с нуля
+    
+    return () => {
+      // Очистка
+      if (packUnwrapAudioRef.current) {
+        packUnwrapAudioRef.current.pause()
+        packUnwrapAudioRef.current = null
+      }
+      if (magicAudioRef.current) {
+        magicAudioRef.current.pause()
+        magicAudioRef.current = null
+      }
+      if (fadeIntervalRef.current) {
+        clearInterval(fadeIntervalRef.current)
+      }
+    }
+  }, [])
+
+  // Функция плавного затухания магического звука
+  const fadeMagicAudio = useCallback((targetVolume = 0, duration = 300, callback) => {
+    const audio = magicAudioRef.current
+    if (!audio) return
+    
+    // Очищаем предыдущий интервал если есть
+    if (fadeIntervalRef.current) {
+      clearInterval(fadeIntervalRef.current)
+    }
+    
+    const startVolume = audio.volume
+    const volumeDiff = targetVolume - startVolume
+    const steps = 20 // Количество шагов
+    const stepDuration = duration / steps
+    const volumeStep = volumeDiff / steps
+    
+    let currentStep = 0
+    
+    fadeIntervalRef.current = setInterval(() => {
+      currentStep++
+      audio.volume = Math.max(0, Math.min(1, startVolume + volumeStep * currentStep))
+      
+      if (currentStep >= steps) {
+        clearInterval(fadeIntervalRef.current)
+        audio.volume = targetVolume
+        
+        // Останавливаем если целевая громкость 0
+        if (targetVolume === 0) {
+          audio.pause()
+          audio.currentTime = 0
+        }
+        
+        if (callback) callback()
+      }
+    }, stepDuration)
+  }, [])
+
   // Функция анимации открытия пакета до конца
   const animateToEnd = useCallback(() => {
     const duration = 400 // длительность анимации в миллисекундах
     const targetProgress = 473
     const targetDistance = 473
+
+    // 🎵 Whoosh звук
+    const audio = packUnwrapAudioRef.current
+    if (audio) {
+      audio.currentTime = 0
+      audio.play().catch(err => console.log('Audio play failed:', err))
+    }
+    
+    // 🎵 Магический звук на пике, затем плавно затухает
+    const magicAudio = magicAudioRef.current
+    if (magicAudio && !magicAudio.paused) {
+      // Сначала поднимаем до пика
+      magicAudio.volume = 0.6
+      
+      // Через 200ms начинаем плавное затухание
+      setTimeout(() => {
+        fadeMagicAudio(0, 500) // Затухаем за 500ms
+      }, 200)
+    }
 
     const animate = (currentTime) => {
       if (!animationStartTimeRef.current) {
@@ -171,7 +259,7 @@ function App() {
     }
 
     animationRafIdRef.current = requestAnimationFrame(animate)
-  }, [easeOutCubic])
+  }, [easeOutCubic, fadeMagicAudio])
 
   // Универсальная функция для получения координат из события
   const getEventCoordinates = useCallback((e) => {
@@ -206,6 +294,21 @@ function App() {
         const newDistance = Math.min(473, Math.max(36, relativeZ / (2 * Math.cos(alpha))))
         const newProgressX = Math.min(473, Math.max(36, relativeX))
 
+        // 🎵 Регулируем громкость магического звука
+        const magicAudio = magicAudioRef.current
+        if (magicAudio && !magicAudio.paused) {
+          // Нормализуем distance от 36 до 473 в диапазон 0-1
+          const minDist = 36
+          const maxDist = 473
+          const normalized = (newDistance - minDist) / (maxDist - minDist)
+          
+          // Применяем ease-out для более плавного нарастания
+          const eased = 1 - Math.pow(1 - normalized, 2)
+          
+          // Устанавливаем громкость от 0 до 0.5 (регулируй по вкусу)
+          magicAudio.volume = Math.min(eased * 0.5, 0.5)
+        }
+
         // Батчим все setState в один ререндер
         setMousePos({ x: relativeX, y: relativeY })
         setProgress({x: newProgressX})
@@ -214,6 +317,8 @@ function App() {
       }
     })
   }, [isDragging, getParallaxElement, getEventCoordinates])
+
+
 
   const handleMouseMove = handleMove
   const handleTouchMove = handleMove
@@ -228,6 +333,14 @@ function App() {
 
     setIsDragging(true)
     setDragginStarted(true)
+    
+    // 🎵 Запускаем магический звук
+    const magicAudio = magicAudioRef.current
+    if (magicAudio && magicAudio.paused) {
+      magicAudio.currentTime = 0
+      magicAudio.volume = 0
+      magicAudio.play().catch(err => console.log('Magic audio play failed:', err))
+    }
     
     const packElement = getParallaxElement()
     if (packElement) {
